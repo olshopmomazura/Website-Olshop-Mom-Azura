@@ -5,35 +5,161 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OLSHOP MOM AZURA</title>
 <style>
-body{font-family: Arial, sans-serif;margin:0;background:#f5f5f5;}
-header{background:#2c7be5;color:white;padding:25px;text-align:center;}
-nav{background:#1a5fb4;padding:12px;text-align:center;position:sticky;top:0;}
-nav a{color:white;margin:0 10px;text-decoration:none;font-weight:bold;}
-.container{max-width:1100px;margin:auto;padding:20px;}
-.card{background:white;padding:20px;margin-bottom:20px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
-.produk-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;}
-.produk{border:1px solid #ddd;border-radius:8px;padding:15px;text-align:center;}
-.produk img{width:100%;height:150px;object-fit:cover;border-radius:6px;cursor:pointer;}
-button{background:#2c7be5;color:white;border:none;padding:8px 12px;border-radius:5px;cursor:pointer;margin:5px 0;}
-button.hapus{background:#dc3545;}
-button.wa{background:#25D366;}
-footer{background:#333;color:white;text-align:center;padding:15px;}
-#adminBtn{position:fixed;top:10px;right:10px;background:#2c7be5;color:white;border:none;padding:8px;border-radius:50%;cursor:pointer;z-index:999;font-size:18px;}
-#loginModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;z-index:10000;display:none;}
-#loginModal div{position:relative;background:white;padding:30px;border-radius:8px;text-align:center;width:300px;}
-#loginModal input{width:90%;padding:8px;margin:5px 0;}
-#loginModal span.close{position:absolute;top:10px;right:15px;font-size:28px;font-weight:bold;cursor:pointer;color:#333;}
-#adminPanel{position:fixed;top:50px;right:50px;width:300px;background:white;border-radius:8px;box-shadow:0 5px 15px rgba(0,0,0,0.3);padding:20px;display:none;z-index:9999;}
-#adminPanel h3{margin-top:0;}
-#adminPanel .closeAdmin{position:absolute;top:5px;right:10px;font-size:20px;cursor:pointer;}
-#adminPanel input, #adminPanel textarea{width:100%;padding:8px;margin:5px 0;}
-#adminPanel button.logout{background:#ff9800;width:100%;}
+body{
+  font-family: Arial, sans-serif;
+  margin:0;
+  background:#f5f5f5;
+}
+header{
+  background:#2c7be5;
+  color:white;
+  padding:25px;
+  text-align:center;
+}
+nav{
+  background:#1a5fb4;
+  padding:12px;
+  text-align:center;
+  position:sticky;
+  top:0;
+}
+nav a{
+  color:white;
+  margin:0 10px;
+  text-decoration:none;
+  font-weight:bold;
+}
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+.card{
+  background:white;
+  padding:20px;
+  margin-bottom:20px;
+  border-radius:8px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+.produk-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
+.produk{
+  border:1px solid #ddd;
+  border-radius:8px;
+  padding:15px;
+  text-align:center;
+}
+.produk img{
+  width:100%;
+  height:150px;
+  object-fit:cover;
+  border-radius:6px;
+  cursor:pointer;
+}
+button{
+  background:#2c7be5;
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:5px;
+  cursor:pointer;
+  margin:5px 0;
+}
+button.hapus{
+  background:#dc3545;
+}
+button.wa{
+  background:#25D366;
+}
+footer{
+  background:#333;
+  color:white;
+  text-align:center;
+  padding:15px;
+}
+
+/* Admin panel */
+#adminPanel{
+  position:fixed;
+  top:50px;
+  right:50px;
+  width:320px;
+  background:white;
+  border-radius:8px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.3);
+  padding:20px;
+  display:none;
+  z-index:9999;
+}
+#adminPanel h3{
+  margin-top:0;
+}
+#adminPanel .closePanel{
+  position:absolute;
+  top:5px;
+  right:10px;
+  font-size:20px;
+  cursor:pointer;
+}
+
+/* Login admin modal */
+#loginModal{
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.7);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:10000;
+  display:none;
+}
+#loginModal div{
+  position:relative;
+  background:white;
+  padding:30px;
+  border-radius:8px;
+  text-align:center;
+  width:300px;
+}
+#loginModal input{
+  width:90%;
+  padding:8px;
+  margin:5px 0;
+}
+#loginModal span.close{
+  position:absolute;
+  top:10px;
+  right:15px;
+  font-size:28px;
+  font-weight:bold;
+  cursor:pointer;
+  color:#333;
+}
+#adminBtn{
+  position:fixed;
+  top:10px;
+  right:10px;
+  background:#2c7be5;
+  color:white;
+  border:none;
+  padding:8px;
+  border-radius:50%;
+  cursor:pointer;
+  z-index:999;
+  font-size:18px;
+}
 </style>
 </head>
 <body>
 
+<!-- Tombol admin login -->
 <button id="adminBtn">🔒</button>
 
+<!-- Login admin modal -->
 <div id="loginModal">
   <div>
     <span class="close" onclick="tutupLoginModal()">&times;</span>
@@ -44,15 +170,15 @@ footer{background:#333;color:white;text-align:center;padding:15px;}
   </div>
 </div>
 
+<!-- Admin panel -->
 <div id="adminPanel">
-  <span class="closeAdmin" onclick="tutupAdminPanel()">&times;</span>
+  <span class="closePanel" onclick="tutupAdminPanel()">&times;</span>
   <h3>Admin Panel</h3>
-  <input type="text" id="namaProduk" placeholder="Nama Produk">
-  <input type="number" id="hargaProduk" placeholder="Harga">
-  <textarea id="catatanProduk" placeholder="Catatan Produk"></textarea>
-  <input type="file" id="fotoProduk" accept="image/*"><br>
+  <input type="text" id="namaProduk" placeholder="Nama Produk"><br><br>
+  <input type="number" id="hargaProduk" placeholder="Harga"><br><br>
+  <textarea id="catatanProduk" placeholder="Catatan Produk"></textarea><br><br>
+  <input type="file" id="fotoProduk" accept="image/*"><br><br>
   <button onclick="tambahProduk()">Tambah Produk</button>
-  <button class="logout" onclick="logoutAdmin()">Logout Admin</button>
 </div>
 
 <header>
@@ -69,36 +195,38 @@ footer{background:#333;color:white;text-align:center;padding:15px;}
 </nav>
 
 <div class="container">
-  <div class="card" id="beranda">
-    <h2>Beranda</h2>
-    <marquee behavior="scroll" direction="left" scrollamount="6" style="font-weight:bold; font-size:18px; color:#2c7be5;">
-      Selamat Datang di <b>OLSHOP MOM AZURA</b>, Pusat Peralatan Rumah Tangga Dengan Harga Terjangkau.
-    </marquee>
-  </div>
 
-  <div class="card" id="tentang">
-    <h2>Tentang Kami</h2>
-    <p>OLSHOP MOM AZURA Adalah Usaha Rumahan Yang Melayani Penjualan Berbagai Kebutuhan Rumah Tangga. Kami Berkomitmen Memberikan Harga Bersahabat.</p>
-  </div>
+<div class="card" id="beranda">
+<h2>Beranda</h2>
+<marquee behavior="scroll" direction="left" scrollamount="6" style="font-weight:bold; font-size:18px; color:#2c7be5;">
+Selamat Datang di <b>OLSHOP MOM AZURA</b>, Pusat Peralatan Rumah Tangga Dengan Harga Terjangkau.
+</marquee>
+</div>
 
-  <div class="card" id="produk">
-    <h2>Daftar Produk</h2>
-    <div class="produk-list" id="produkList"></div>
-    <p id="produkKosong" style="text-align:center;color:#888;"></p>
-  </div>
+<div class="card" id="tentang">
+<h2>Tentang Kami</h2>
+<p>OLSHOP MOM AZURA Adalah Usaha Rumahan Yang Melayani Penjualan Berbagai Kebutuhan Rumah Tangga. Kami Berkomitmen Memberikan Harga Bersahabat.</p>
+</div>
 
-  <div class="card" id="keranjang">
-    <h2>Keranjang Belanja</h2>
-    <div id="cartList"></div>
-    <h3>Total: Rp <span id="total">0</span></h3>
-    <button onclick="pesanCart()">Pesan Sekarang</button>
-  </div>
+<div class="card" id="produk">
+<h2>Daftar Produk</h2>
+<div class="produk-list" id="produkList"></div>
+<p id="produkKosong" style="text-align:center;color:#888;"></p>
+</div>
 
-  <div class="card" id="kontak">
-    <h2>Kontak</h2>
-    <p>📞 WhatsApp : <b>082274434864</b></p>
-    <p>🏠 Alamat : Jl.Permata 6 Belakang Usi (Perumahan Mogakovi Permata Blok E 8)</p>
-  </div>
+<div class="card" id="keranjang">
+<h2>Keranjang Belanja</h2>
+<div id="cartList"></div>
+<h3>Total: Rp <span id="total">0</span></h3>
+<button onclick="pesanSekarang()">Pesan Sekarang</button>
+</div>
+
+<div class="card" id="kontak">
+<h2>Kontak</h2>
+<p>📞 WhatsApp : <b>082274434864</b></p>
+<p>🏠 Alamat : Jl.Permata 6 Belakang Usi (Perumahan Mogakovi Permata Blok E 8)</p>
+</div>
+
 </div>
 
 <footer>
@@ -109,44 +237,66 @@ footer{background:#333;color:white;text-align:center;padding:15px;}
 let produk = JSON.parse(localStorage.getItem("produk")) || [];
 let cart = [];
 let totalHarga = 0;
-const waPhone='6282274434864';
+const waPhone = '6282274434864';
+
 const ADMIN_USER="admin";
 const ADMIN_PASS="1234";
-let isAdmin = localStorage.getItem("isAdmin")==="true";
+let isAdmin = false;
 
 document.getElementById("adminBtn").addEventListener("click",()=>{
-  if(isAdmin){document.getElementById("adminPanel").style.display="block";}
-  else{document.getElementById("loginModal").style.display="flex";}
+  if(isAdmin) showAdminPanel();
+  else document.getElementById("loginModal").style.display="flex";
 });
 
-function tutupLoginModal(){document.getElementById("loginModal").style.display="none";}
-function tutupAdminPanel(){document.getElementById("adminPanel").style.display="none";}
-
+function tutupLoginModal(){ document.getElementById("loginModal").style.display="none"; }
 function loginAdmin(){
-  const user=document.getElementById("username").value;
-  const pass=document.getElementById("password").value;
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
   if(user===ADMIN_USER && pass===ADMIN_PASS){
     isAdmin=true;
-    localStorage.setItem("isAdmin","true");
     tutupLoginModal();
-    document.getElementById("adminPanel").style.display="block";
     alert("Login admin berhasil!");
+    showAdminPanel();
     tampilkanProduk();
   } else alert("Username/password salah!");
 }
 
-function logoutAdmin(){
-  isAdmin=false;
-  localStorage.setItem("isAdmin","false");
-  document.getElementById("adminPanel").style.display="none";
+function showAdminPanel(){ document.getElementById("adminPanel").style.display="block"; }
+function tutupAdminPanel(){ document.getElementById("adminPanel").style.display="none"; }
+
+// Tambah produk admin
+function tambahProduk(){
+  if(!isAdmin){alert("Hanya admin bisa menambah produk!"); return;}
+  if(!fotoProduk.files[0]){ alert("Pilih foto produk!"); return;}
+  const reader = new FileReader();
+  reader.onload = e=>{
+    produk.push({
+      nama: namaProduk.value,
+      harga: parseInt(hargaProduk.value),
+      catatan: catatanProduk.value,
+      foto: e.target.result
+    });
+    localStorage.setItem("produk", JSON.stringify(produk));
+    tampilkanProduk();
+    namaProduk.value=''; hargaProduk.value=''; catatanProduk.value=''; fotoProduk.value='';
+  };
+  reader.readAsDataURL(fotoProduk.files[0]);
+}
+
+// Hapus produk admin
+function hapusProduk(i){
+  if(!isAdmin){ alert("Hanya admin bisa menghapus produk!"); return;}
+  produk.splice(i,1);
+  localStorage.setItem("produk", JSON.stringify(produk));
   tampilkanProduk();
 }
 
+// Tampilkan produk
 function tampilkanProduk(){
   const list=document.getElementById("produkList");
   const kosong=document.getElementById("produkKosong");
   list.innerHTML="";
-  if(produk.length===0){kosong.innerText="Belum ada produk tersedia.";}
+  if(produk.length===0){ kosong.innerText="Belum ada produk tersedia."; }
   else{
     kosong.innerText="";
     produk.forEach((p,i)=>{
@@ -164,60 +314,31 @@ function tampilkanProduk(){
   }
 }
 
-function tambahProduk(){
-  if(!isAdmin) return alert("Hanya admin bisa menambah produk!");
-  const fotoFile=document.getElementById("fotoProduk").files[0];
-  if(!fotoFile) return alert("Pilih foto produk!");
-  const reader=new FileReader();
-  reader.onload=function(e){
-    produk.push({
-      nama: document.getElementById("namaProduk").value,
-      harga: parseInt(document.getElementById("hargaProduk").value),
-      catatan: document.getElementById("catatanProduk").value,
-      foto: e.target.result
-    });
-    localStorage.setItem("produk",JSON.stringify(produk));
-    tampilkanProduk();
-    document.getElementById("namaProduk").value='';
-    document.getElementById("hargaProduk").value='';
-    document.getElementById("catatanProduk").value='';
-    document.getElementById("fotoProduk").value='';
-  };
-  reader.readAsDataURL(fotoFile);
-}
-
-function hapusProduk(i){
-  if(!isAdmin) return alert("Hanya admin yang bisa menghapus produk!");
-  produk.splice(i,1);
-  localStorage.setItem("produk",JSON.stringify(produk));
-  tampilkanProduk();
-}
-
-function tambahCart(nama,harga){
-  cart.push({nama,harga});
-  totalHarga+=harga;
-  tampilkanCart();
-}
-
+// Keranjang
+function tambahCart(nama,harga){ cart.push({nama,harga}); totalHarga+=harga; tampilkanCart(); }
 function tampilkanCart(){
-  const c=document.getElementById("cartList"), t=document.getElementById("total");
+  const c=document.getElementById("cartList"),t=document.getElementById("total");
   c.innerHTML="";
-  cart.forEach((p,i)=>{c.innerHTML+=`<p>${i+1}. ${p.nama} - Rp ${p.harga.toLocaleString()}</p>`});
+  cart.forEach((p,i)=>{ c.innerHTML+=`<p>${i+1}. ${p.nama} - Rp ${p.harga.toLocaleString()}</p>`; });
   t.innerText=totalHarga.toLocaleString();
 }
 
-// Pesan via WhatsApp, minimal 0 barang
-function pesanCart(){
-  if(cart.length<2){alert("Minimal 0 barang untuk memesan!"); return;}
-  let pesan = "Halo, saya ingin memesan:\n";
-  cart.forEach((p,i)=>{pesan+=`${i+1}. ${p.nama} - Rp ${p.harga.toLocaleString()}\n`;});
-  window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(pesan)}`,'_blank');
+// Pesan sekarang tanpa batas minimal
+function pesanSekarang(){
+  if(cart.length===0){ alert("Keranjang masih kosong!"); return;}
+  let text="Halo, saya ingin memesan:\n";
+  cart.forEach((p,i)=>{ text+=`${i+1}. ${p.nama} - Rp ${p.harga.toLocaleString()}\n`; });
+  text+=`Total: Rp ${totalHarga.toLocaleString()}`;
+  window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(text)}`,'_blank');
 }
 
+// Pesan WA individual
 function orderWhatsApp(nama,harga){
-  window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(`Halo, saya ingin memesan *${nama}* seharga Rp ${harga.toLocaleString()}`)}`,'_blank');
+  const text=`Halo, saya ingin memesan *${nama}* seharga Rp ${harga.toLocaleString()}`;
+  window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(text)}`,'_blank');
 }
 
+// Modal gambar
 function bukaModal(src){
   const m=document.createElement("div");
   m.style.position="fixed"; m.style.top="0"; m.style.left="0";
@@ -227,15 +348,14 @@ function bukaModal(src){
   m.style.zIndex="9999";
   const img=document.createElement("img");
   img.src=src; img.style.maxWidth="90%"; img.style.maxHeight="90%"; img.style.borderRadius="12px";
-  m.appendChild(img); m.onclick=function(){m.remove()};
+  m.appendChild(img);
+  m.onclick=function(){m.remove()};
   document.body.appendChild(m);
 }
 
-if(localStorage.getItem("isAdmin")==="true"){isAdmin=true; document.getElementById("adminPanel").style.display="block";}
+// Load produk saat pertama kali
 tampilkanProduk();
 </script>
 
 </body>
 </html>
-
-
