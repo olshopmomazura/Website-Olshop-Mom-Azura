@@ -81,16 +81,40 @@ footer{
   padding:15px;
 }
 
-/* Login modal */
+/* Admin popup */
+#adminPopup{
+  position:fixed;
+  top:50px;
+  right:50px;
+  width:300px;
+  background:white;
+  border-radius:8px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.3);
+  padding:20px;
+  display:none;
+  z-index:9999;
+}
+#adminPopup h3{
+  margin-top:0;
+}
+#adminPopup .closePopup{
+  position:absolute;
+  top:5px;
+  right:10px;
+  font-size:20px;
+  cursor:pointer;
+}
+
+/* Modal login admin */
 #loginModal{
   position:fixed;
   top:0; left:0;
   width:100%; height:100%;
-  background:rgba(0,0,0,0.8);
+  background:rgba(0,0,0,0.7);
   display:flex;
   justify-content:center;
   align-items:center;
-  z-index:9999;
+  z-index:10000;
 }
 #loginModal div{
   position:relative;
@@ -105,7 +129,6 @@ footer{
   padding:8px;
   margin:5px 0;
 }
-/* Tombol silang tutup modal */
 #loginModal span.close{
   position:absolute;
   top:10px;
@@ -116,7 +139,7 @@ footer{
   color:#333;
 }
 
-/* Tombol login admin kecil */
+/* Tombol admin kecil */
 #adminBtn{
   position:fixed;
   top:10px;
@@ -127,17 +150,28 @@ footer{
   padding:8px;
   border-radius:50%;
   cursor:pointer;
-  z-index:9999;
+  z-index:999;
   font-size:18px;
 }
 </style>
 </head>
 <body>
 
-<!-- Tombol login admin -->
+<!-- Tombol admin -->
 <button id="adminBtn">🔒</button>
 
-<!-- LOGIN ADMIN -->
+<!-- Popup admin (tambah/hapus produk) -->
+<div id="adminPopup">
+  <span class="closePopup" onclick="tutupAdminPopup()">&times;</span>
+  <h3>Admin Panel</h3>
+  <input type="text" id="namaProduk" placeholder="Nama Produk"><br><br>
+  <input type="number" id="hargaProduk" placeholder="Harga"><br><br>
+  <textarea id="catatanProduk" placeholder="Catatan Produk"></textarea><br><br>
+  <input type="file" id="fotoProduk" accept="image/*"><br><br>
+  <button onclick="tambahProduk()">Upload Produk</button>
+</div>
+
+<!-- Login admin modal -->
 <div id="loginModal" style="display:none;">
   <div>
     <span class="close" onclick="tutupLoginModal()">&times;</span>
@@ -180,18 +214,6 @@ Selamat Datang di <b>OLSHOP MOM AZURA</b>, Pusat Peralatan Rumah Tangga Dengan H
 
 <!-- PRODUK -->
 <div class="card" id="produk">
-<h2>Produk</h2>
-
-<!-- Form upload hanya untuk admin -->
-<div id="formUpload">
-<input type="text" id="namaProduk" placeholder="Nama Produk"><br><br>
-<input type="number" id="hargaProduk" placeholder="Harga"><br><br>
-<textarea id="catatanProduk" placeholder="Catatan Produk"></textarea><br><br>
-<input type="file" id="fotoProduk" accept="image/*"><br><br>
-<button onclick="tambahProduk()" id="btnUpload">Upload Produk</button>
-<hr>
-</div>
-
 <h2>Daftar Produk</h2>
 <div class="produk-list" id="produkList"></div>
 </div>
@@ -234,10 +256,19 @@ const ADMIN_USER = "admin";
 const ADMIN_PASS = "1234";
 let isAdmin = localStorage.getItem("isAdmin") === "true";
 
-// Tombol login admin
+// Tombol admin
 document.getElementById("adminBtn").addEventListener("click", ()=>{
-  document.getElementById("loginModal").style.display = "flex";
+  if(isAdmin){
+    document.getElementById("adminPopup").style.display="block";
+  } else {
+    document.getElementById("loginModal").style.display="flex";
+  }
 });
+
+// Tutup admin popup
+function tutupAdminPopup(){
+  document.getElementById("adminPopup").style.display="none";
+}
 
 // Tutup login modal
 function tutupLoginModal(){
@@ -253,6 +284,7 @@ function loginAdmin(){
     localStorage.setItem("isAdmin", "true");
     tutupLoginModal();
     document.getElementById("loginLogoutBtn").innerText = "Logout";
+    document.getElementById("adminPopup").style.display="block";
     alert("Login berhasil! Anda bisa menambah/hapus produk.");
     tampilkanProduk();
   } else {
@@ -265,6 +297,7 @@ function logoutAdmin(){
   isAdmin = false;
   localStorage.setItem("isAdmin", "false");
   document.getElementById("loginLogoutBtn").innerText = "Login";
+  document.getElementById("adminPopup").style.display="none";
   tampilkanProduk();
 }
 
@@ -273,7 +306,7 @@ function toggleLoginLogout(){
   if(isAdmin){
     logoutAdmin();
   } else {
-    document.getElementById("loginModal").style.display = "flex";
+    document.getElementById("loginModal").style.display="flex";
   }
 }
 
@@ -299,12 +332,6 @@ function tampilkanProduk(){
       </div>
     `;
   });
-
-  // Form upload hanya untuk admin
-  document.getElementById("formUpload").style.display = isAdmin ? "block" : "none";
-
-  // Tombol admin
-  document.getElementById("adminBtn").style.display = isAdmin ? "none" : "block";
 }
 
 // TAMBAH PRODUK (hanya admin)
