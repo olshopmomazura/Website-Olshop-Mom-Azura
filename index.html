@@ -5,126 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OLSHOP MOM AZURA</title>
 <style>
-body{
-  font-family: Arial, sans-serif;
-  margin:0;
-  background:#f5f5f5;
-}
-header{
-  background:#2c7be5;
-  color:white;
-  padding:25px;
-  text-align:center;
-}
-nav{
-  background:#1a5fb4;
-  padding:12px;
-  text-align:center;
-  position:sticky;
-  top:0;
-}
-nav a{
-  color:white;
-  margin:0 10px;
-  text-decoration:none;
-  font-weight:bold;
-}
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
-}
-.card{
-  background:white;
-  padding:20px;
-  margin-bottom:20px;
-  border-radius:8px;
-  box-shadow:0 2px 5px rgba(0,0,0,0.1);
-}
-.produk-list{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;
-}
-.produk{
-  border:1px solid #ddd;
-  border-radius:8px;
-  padding:15px;
-  text-align:center;
-}
-.produk img{
-  width:100%;
-  height:150px;
-  object-fit:cover;
-  border-radius:6px;
-  cursor:pointer;
-}
-button{
-  background:#2c7be5;
-  color:white;
-  border:none;
-  padding:8px 12px;
-  border-radius:5px;
-  cursor:pointer;
-  margin:5px 0;
-}
-button.wa{
-  background:#25D366;
-}
-footer{
-  background:#333;
-  color:white;
-  text-align:center;
-  padding:15px;
-}
+body{font-family: Arial, sans-serif;margin:0;background:#f5f5f5;}
+header{background:#2c7be5;color:white;padding:25px;text-align:center;}
+nav{background:#1a5fb4;padding:12px;text-align:center;position:sticky;top:0;}
+nav a{color:white;margin:0 10px;text-decoration:none;font-weight:bold;}
+.container{max-width:1100px;margin:auto;padding:20px;}
+.card{background:white;padding:20px;margin-bottom:20px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+.produk-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;}
+.produk{border:1px solid #ddd;border-radius:8px;padding:15px;text-align:center;}
+.produk img{width:100%;height:150px;object-fit:cover;border-radius:6px;cursor:pointer;}
+button{background:#2c7be5;color:white;border:none;padding:8px 12px;border-radius:5px;cursor:pointer;margin:5px 0;}
+button.hapus{background:#dc3545;}
+button.wa{background:#25D366;}
+footer{background:#333;color:white;text-align:center;padding:15px;}
 
 /* Login admin modal */
-#loginModal{
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:rgba(0,0,0,0.7);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:10000;
-  display:none;
-}
-#loginModal div{
-  position:relative;
-  background:white;
-  padding:30px;
-  border-radius:8px;
-  text-align:center;
-  width:300px;
-}
-#loginModal input{
-  width:90%;
-  padding:8px;
-  margin:5px 0;
-}
-#loginModal span.close{
-  position:absolute;
-  top:10px;
-  right:15px;
-  font-size:28px;
-  font-weight:bold;
-  cursor:pointer;
-  color:#333;
-}
-#adminBtn{
-  position:fixed;
-  top:10px;
-  right:10px;
-  background:#2c7be5;
-  color:white;
-  border:none;
-  padding:8px;
-  border-radius:50%;
-  cursor:pointer;
-  z-index:999;
-  font-size:18px;
-}
+#loginModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;z-index:10000;display:none;}
+#loginModal div{position:relative;background:white;padding:30px;border-radius:8px;text-align:center;width:300px;}
+#loginModal input{width:90%;padding:8px;margin:5px 0;}
+#loginModal span.close{position:absolute;top:10px;right:15px;font-size:28px;font-weight:bold;cursor:pointer;color:#333;}
+#adminBtn{position:fixed;top:10px;right:10px;background:#2c7be5;color:white;border:none;padding:8px;border-radius:50%;cursor:pointer;z-index:999;font-size:18px;}
 </style>
 </head>
 <body>
@@ -157,44 +57,35 @@ footer{
 </nav>
 
 <div class="container">
-<!-- PRODUK -->
-<div class="card" id="produk">
-  <h2>Daftar Produk</h2>
-  <!-- tempat produk akan muncul -->
-  <div class="produk-list" id="produkList"></div>
-  <!-- teks jika belum ada produk -->
-  <p id="produkKosong" style="text-align:center;color:#888;"></p>
-</div>
-<div class="card" id="beranda">
-<h2>Beranda</h2>
-<marquee behavior="scroll" direction="left" scrollamount="6" style="font-weight:bold; font-size:18px; color:#2c7be5;">
-Selamat Datang di <b>OLSHOP MOM AZURA</b>, Pusat Peralatan Rumah Tangga Dengan Harga Terjangkau.
-</marquee>
-</div>
+  <div class="card" id="beranda">
+    <h2>Beranda</h2>
+    <marquee behavior="scroll" direction="left" scrollamount="6" style="font-weight:bold; font-size:18px; color:#2c7be5;">
+      Selamat Datang di <b>OLSHOP MOM AZURA</b>, Pusat Peralatan Rumah Tangga Dengan Harga Terjangkau.
+    </marquee>
+  </div>
 
-<div class="card" id="tentang">
-<h2>Tentang Kami</h2>
-<p>OLSHOP MOM AZURA Adalah Usaha Rumahan Yang Melayani Penjualan Berbagai Kebutuhan Rumah Tangga. Kami Berkomitmen Memberikan Harga Bersahabat.</p>
-</div>
+  <div class="card" id="tentang">
+    <h2>Tentang Kami</h2>
+    <p>OLSHOP MOM AZURA Adalah Usaha Rumahan Yang Melayani Penjualan Berbagai Kebutuhan Rumah Tangga. Kami Berkomitmen Memberikan Harga Bersahabat.</p>
+  </div>
 
-<div class="card" id="produk">
-<h2>Daftar Produk</h2>
-<div class="produk-list" id="produkList"></div>
-<p id="produkKosong" style="text-align:center;color:#888;"></p>
-</div>
+  <div class="card" id="produk">
+    <h2>Daftar Produk</h2>
+    <div class="produk-list" id="produkList"></div>
+    <p id="produkKosong" style="text-align:center;color:#888;"></p>
+  </div>
 
-<div class="card" id="keranjang">
-<h2>Keranjang Belanja</h2>
-<div id="cartList"></div>
-<h3>Total: Rp <span id="total">0</span></h3>
-</div>
+  <div class="card" id="keranjang">
+    <h2>Keranjang Belanja</h2>
+    <div id="cartList"></div>
+    <h3>Total: Rp <span id="total">0</span></h3>
+  </div>
 
-<div class="card" id="kontak">
-<h2>Kontak</h2>
-<p>📞 WhatsApp : <b>082274434864</b></p>
-<p>🏠 Alamat : Jl.Permata 6 Belakang Usi (Perumahan Mogakovi Permata Blok E 8)</p>
-</div>
-
+  <div class="card" id="kontak">
+    <h2>Kontak</h2>
+    <p>📞 WhatsApp : <b>082274434864</b></p>
+    <p>🏠 Alamat : Jl.Permata 6 Belakang Usi (Perumahan Mogakovi Permata Blok E 8)</p>
+  </div>
 </div>
 
 <footer>
@@ -202,31 +93,27 @@ Selamat Datang di <b>OLSHOP MOM AZURA</b>, Pusat Peralatan Rumah Tangga Dengan H
 </footer>
 
 <script>
-let produk = JSON.parse(localStorage.getItem("produk")) || [];
+let produk = JSON.parse(localStorage.getItem("produk")) || [
+  {nama:"Contoh Produk 1", harga:10000, catatan:"Contoh", foto:"https://via.placeholder.com/200"},
+  {nama:"Contoh Produk 2", harga:20000, catatan:"Contoh", foto:"https://via.placeholder.com/200"}
+];
 let cart = [];
 let totalHarga = 0;
-const waPhone = '6282274434864';
-
+const waPhone='6282274434864';
 const ADMIN_USER="admin";
 const ADMIN_PASS="1234";
-let isAdmin = false;
+let isAdmin=false;
 
-document.getElementById("adminBtn").addEventListener("click",()=>{
-  document.getElementById("loginModal").style.display="flex";
-});
-
+document.getElementById("adminBtn").addEventListener("click",()=>{document.getElementById("loginModal").style.display="flex";});
 function tutupLoginModal(){document.getElementById("loginModal").style.display="none";}
-
 function loginAdmin(){
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
-  if(user===ADMIN_USER && pass===ADMIN_PASS){
-    isAdmin=true;
-    tutupLoginModal();
-    alert("Login admin berhasil!");
-  } else alert("Username/password salah!");
+  const user=document.getElementById("username").value;
+  const pass=document.getElementById("password").value;
+  if(user===ADMIN_USER && pass===ADMIN_PASS){isAdmin=true;tutupLoginModal();alert("Login admin berhasil!");tampilkanProduk();}
+  else alert("Username/password salah!");
 }
 
+// Tampilkan produk untuk semua pelanggan
 function tampilkanProduk(){
   const list=document.getElementById("produkList");
   const kosong=document.getElementById("produkKosong");
@@ -234,7 +121,7 @@ function tampilkanProduk(){
   if(produk.length===0){kosong.innerText="Belum ada produk tersedia.";}
   else{
     kosong.innerText="";
-    produk.forEach(p=>{
+    produk.forEach((p,i)=>{
       list.innerHTML+=`
       <div class="produk">
         <img src="${p.foto}" onclick="bukaModal('${p.foto}')">
@@ -242,17 +129,42 @@ function tampilkanProduk(){
         <p>${p.catatan}</p>
         <p><b>Rp ${p.harga.toLocaleString()}</b></p>
         <button class="wa" onclick="orderWhatsApp('${p.nama}',${p.harga})">Pesan WA</button>
+        ${isAdmin?`<button class="hapus" onclick="hapusProduk(${i})">Hapus</button>`:''}
       </div>`;
     });
   }
 }
 
+// Hapus produk (hanya admin)
+function hapusProduk(i){
+  if(!isAdmin) return alert("Hanya admin yang bisa menghapus produk!");
+  produk.splice(i,1);
+  localStorage.setItem("produk",JSON.stringify(produk));
+  tampilkanProduk();
+}
+
+// Tambah ke keranjang
 function tambahCart(nama,harga){cart.push({nama,harga});totalHarga+=harga;tampilkanCart();}
 function tampilkanCart(){const c=document.getElementById("cartList"),t=document.getElementById("total");c.innerHTML="";cart.forEach((p,i)=>{c.innerHTML+=`<p>${i+1}. ${p.nama} - Rp ${p.harga.toLocaleString()}</p>`});t.innerText=totalHarga.toLocaleString();}
+
+// Pesan WA
 function orderWhatsApp(nama,harga){window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(`Halo, saya ingin memesan *${nama}* seharga Rp ${harga.toLocaleString()}`)}`,'_blank');}
 
-function bukaModal(src){const m=document.createElement("div");m.style.position="fixed";m.style.top="0";m.style.left="0";m.style.width="100%";m.style.height="100%";m.style.background="rgba(0,0,0,0.85)";m.style.display="flex";m.style.justifyContent="center";m.style.alignItems="center";m.style.zIndex="9999";const img=document.createElement("img");img.src=src;img.style.maxWidth="90%";img.style.maxHeight="90%";img.style.borderRadius="12px";m.appendChild(img);m.onclick=function(){m.remove()};document.body.appendChild(m);}
+// Modal gambar
+function bukaModal(src){
+  const m=document.createElement("div");
+  m.style.position="fixed"; m.style.top="0"; m.style.left="0";
+  m.style.width="100%"; m.style.height="100%";
+  m.style.background="rgba(0,0,0,0.85)";
+  m.style.display="flex"; m.style.justifyContent="center"; m.style.alignItems="center";
+  m.style.zIndex="9999";
+  const img=document.createElement("img");
+  img.src=src; img.style.maxWidth="90%"; img.style.maxHeight="90%"; img.style.borderRadius="12px";
+  m.appendChild(img); m.onclick=function(){m.remove()};
+  document.body.appendChild(m);
+}
 
+// Tampilkan produk saat load
 tampilkanProduk();
 </script>
 
