@@ -28,6 +28,7 @@ nav a{
   margin:0 10px;
   text-decoration:none;
   font-weight:bold;
+  cursor:pointer;
 }
 .container{
   max-width:1100px;
@@ -51,6 +52,7 @@ nav a{
   border-radius:8px;
   padding:15px;
   text-align:center;
+  position:relative;
 }
 .produk img{
   width:100%;
@@ -68,6 +70,14 @@ button{
   cursor:pointer;
   margin:5px 0;
 }
+button.hapus{
+  background:#dc3545;
+  position:absolute;
+  top:5px;
+  right:5px;
+  padding:4px 6px;
+  font-size:12px;
+}
 button.wa{
   background:#25D366;
 }
@@ -78,7 +88,7 @@ footer{
   padding:15px;
 }
 
-/* Login admin modal */
+/* Admin login modal */
 #loginModal{
   position:fixed;
   top:0; left:0;
@@ -154,6 +164,7 @@ footer{
 <a href="#produk">Produk</a>
 <a href="#keranjang">Keranjang</a>
 <a href="#kontak">Kontak</a>
+<a id="loginLogoutBtn" onclick="toggleLoginLogout()">Login</a>
 </nav>
 
 <div class="container">
@@ -202,23 +213,36 @@ const waPhone = '6282274434864';
 
 const ADMIN_USER="admin";
 const ADMIN_PASS="1234";
-let isAdmin = false;
+let isAdmin = localStorage.getItem("isAdmin")==="true";
 
-document.getElementById("adminBtn").addEventListener("click",()=>{
-  document.getElementById("loginModal").style.display="flex";
+document.addEventListener("DOMContentLoaded",()=>{
+  updateLoginLogoutBtn();
+  tampilkanProduk();
 });
 
 function tutupLoginModal(){document.getElementById("loginModal").style.display="none";}
-
 function loginAdmin(){
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
+  const user=document.getElementById("username").value;
+  const pass=document.getElementById("password").value;
   if(user===ADMIN_USER && pass===ADMIN_PASS){
     isAdmin=true;
+    localStorage.setItem("isAdmin","true");
     tutupLoginModal();
+    updateLoginLogoutBtn();
     alert("Login admin berhasil!");
+    tampilkanProduk();
   } else alert("Username/password salah!");
 }
+function logoutAdmin(){
+  isAdmin=false;
+  localStorage.setItem("isAdmin","false");
+  updateLoginLogoutBtn();
+  tampilkanProduk();
+}
+function toggleLoginLogout(){isAdmin?logoutAdmin():document.getElementById("loginModal").style.display="flex";}
+function updateLoginLogoutBtn(){document.getElementById("loginLogoutBtn").innerText=isAdmin?"Logout":"Login";}
+
+function simpanProduk(){localStorage.setItem("produk",JSON.stringify(produk));}
 
 function tampilkanProduk(){
   const list=document.getElementById("produkList");
@@ -227,7 +251,7 @@ function tampilkanProduk(){
   if(produk.length===0){kosong.innerText="Belum ada produk tersedia.";}
   else{
     kosong.innerText="";
-    produk.forEach(p=>{
+    produk.forEach((p,i)=>{
       list.innerHTML+=`
       <div class="produk">
         <img src="${p.foto}" onclick="bukaModal('${p.foto}')">
@@ -235,16 +259,38 @@ function tampilkanProduk(){
         <p>${p.catatan}</p>
         <p><b>Rp ${p.harga.toLocaleString()}</b></p>
         <button class="wa" onclick="orderWhatsApp('${p.nama}',${p.harga})">Pesan WA</button>
+        ${isAdmin?`<button class="hapus" onclick="hapusProduk(${i})">Hapus</button>`:''}
       </div>`;
     });
   }
 }
 
+function hapusProduk(i){if(!isAdmin)return alert("Hanya admin bisa menghapus produk!");produk.splice(i,1);simpanProduk();tampilkanProduk();}
 function tambahCart(nama,harga){cart.push({nama,harga});totalHarga+=harga;tampilkanCart();}
 function tampilkanCart(){const c=document.getElementById("cartList"),t=document.getElementById("total");c.innerHTML="";cart.forEach((p,i)=>{c.innerHTML+=`<p>${i+1}. ${p.nama} - Rp ${p.harga.toLocaleString()}</p>`});t.innerText=totalHarga.toLocaleString();}
 function orderWhatsApp(nama,harga){window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(`Halo, saya ingin memesan *${nama}* seharga Rp ${harga.toLocaleString()}`)}`,'_blank');}
 
-function bukaModal(src){const m=document.createElement("div");m.style.position="fixed";m.style.top="0";m.style.left="0";m.style.width="100%";m.style.height="100%";m.style.background="rgba(0,0,0,0.85)";m.style.display="flex";m.style.justifyContent="center";m.style.alignItems="center";m.style.zIndex="9999";const img=document.createElement("img");img.src=src;img.style.maxWidth="90%";img.style.maxHeight="90%";img.style.borderRadius="12px";m.appendChild(img);m.onclick=function(){m.remove()};document.body.appendChild(m);}
+function bukaModal(src){
+  const m=document.createElement("div");
+  m.style.position="fixed";
+  m.style.top="0";
+  m.style.left="0";
+  m.style.width="100%";
+  m.style.height="100%";
+  m.style.background="rgba(0,0,0,0.85)";
+  m.style.display="flex";
+  m.style.justifyContent="center";
+  m.style.alignItems="center";
+  m.style.zIndex="9999";
+  const img=document.createElement("img");
+  img.src=src;
+  img.style.maxWidth="90%";
+  img.style.maxHeight="90%";
+  img.style.borderRadius="12px";
+  m.appendChild(img);
+  m.onclick=function(){m.remove();}
+  document.body.appendChild(m);
+}
 
 tampilkanProduk();
 </script>
