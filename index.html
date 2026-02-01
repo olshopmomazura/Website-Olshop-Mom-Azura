@@ -117,6 +117,10 @@ footer{
   z-index:10000;
   display:none;
   box-shadow:0 2px 5px rgba(0,0,0,0.3);
+  transition:0.3s;
+}
+#adminIcon:hover{
+  background:#e0a800;
 }
 </style>
 </head>
@@ -147,7 +151,7 @@ footer{
 </nav>
 
 <!-- ICON ADMIN -->
-<div id="adminIcon">ADMIN</div>
+<div id="adminIcon" onclick="logoutAdmin()">ADMIN</div>
 
 <div class="container">
 
@@ -255,7 +259,7 @@ function logoutAdmin(){
   tampilkanProduk();
 }
 
-// TOGGLE LOGIN/LOGOUT
+// TOGGLE LOGIN/LOGOUT NAVBAR
 function toggleLoginLogout(){
   if(isAdmin){
     logoutAdmin();
