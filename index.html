@@ -105,7 +105,7 @@ footer{
   cursor:pointer;
 }
 
-/* Modal login admin */
+/* Login admin modal */
 #loginModal{
   position:fixed;
   top:0; left:0;
@@ -193,7 +193,6 @@ footer{
 <a href="#produk">Produk</a>
 <a href="#keranjang">Keranjang</a>
 <a href="#kontak">Kontak</a>
-<a href="#" id="loginLogoutBtn" onclick="toggleLoginLogout()">Login</a>
 </nav>
 
 <div class="container">
@@ -283,7 +282,6 @@ function loginAdmin(){
     isAdmin = true;
     localStorage.setItem("isAdmin", "true");
     tutupLoginModal();
-    document.getElementById("loginLogoutBtn").innerText = "Logout";
     document.getElementById("adminPopup").style.display="block";
     alert("Login berhasil! Anda bisa menambah/hapus produk.");
     tampilkanProduk();
@@ -296,18 +294,8 @@ function loginAdmin(){
 function logoutAdmin(){
   isAdmin = false;
   localStorage.setItem("isAdmin", "false");
-  document.getElementById("loginLogoutBtn").innerText = "Login";
   document.getElementById("adminPopup").style.display="none";
   tampilkanProduk();
-}
-
-// Toggle login/logout
-function toggleLoginLogout(){
-  if(isAdmin){
-    logoutAdmin();
-  } else {
-    document.getElementById("loginModal").style.display="flex";
-  }
 }
 
 // SIMPAN PRODUK
