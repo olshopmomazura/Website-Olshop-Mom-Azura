@@ -289,18 +289,23 @@ function tampilkanProduk(){
   document.getElementById("catatanProduk").style.display = displayStyle;
   document.getElementById("fotoProduk").style.display = displayStyle;
   document.getElementById("btnUpload").style.display = displayStyle;
+
+  // Sembunyikan tombol admin dari pelanggan
+  document.getElementById("adminBtn").style.display = isAdmin ? "none" : "block";
 }
 
-// TAMBAH PRODUK
+// TAMBAH PRODUK (hanya admin)
 function tambahProduk(){
+  if(!isAdmin) return alert("Hanya admin yang bisa menambah produk!");
   if(!fotoProduk.files[0]) return alert("Pilih foto produk!");
+  
   const reader = new FileReader();
   reader.onload = e=>{
     produk.push({
-      nama:namaProduk.value,
-      harga:parseInt(hargaProduk.value),
-      catatan:catatanProduk.value,
-      foto:e.target.result
+      nama: namaProduk.value,
+      harga: parseInt(hargaProduk.value),
+      catatan: catatanProduk.value,
+      foto: e.target.result
     });
     simpanProduk();
     tampilkanProduk();
@@ -312,8 +317,9 @@ function tambahProduk(){
   reader.readAsDataURL(fotoProduk.files[0]);
 }
 
-// HAPUS PRODUK
+// HAPUS PRODUK (hanya admin)
 function hapusProduk(i){
+  if(!isAdmin) return alert("Hanya admin yang bisa menghapus produk!");
   produk.splice(i,1);
   simpanProduk();
   tampilkanProduk();
