@@ -18,21 +18,22 @@ button{background:#2c7be5;color:white;border:none;padding:8px 12px;border-radius
 button.hapus{background:#dc3545;}
 button.wa{background:#25D366;}
 footer{background:#333;color:white;text-align:center;padding:15px;}
-
-/* Login admin modal */
+#adminBtn{position:fixed;top:10px;right:10px;background:#2c7be5;color:white;border:none;padding:8px;border-radius:50%;cursor:pointer;z-index:999;font-size:18px;}
 #loginModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;z-index:10000;display:none;}
 #loginModal div{position:relative;background:white;padding:30px;border-radius:8px;text-align:center;width:300px;}
 #loginModal input{width:90%;padding:8px;margin:5px 0;}
 #loginModal span.close{position:absolute;top:10px;right:15px;font-size:28px;font-weight:bold;cursor:pointer;color:#333;}
-#adminBtn{position:fixed;top:10px;right:10px;background:#2c7be5;color:white;border:none;padding:8px;border-radius:50%;cursor:pointer;z-index:999;font-size:18px;}
+#adminPanel{position:fixed;top:50px;right:50px;width:300px;background:white;border-radius:8px;box-shadow:0 5px 15px rgba(0,0,0,0.3);padding:20px;display:none;z-index:9999;}
+#adminPanel h3{margin-top:0;}
+#adminPanel .closeAdmin{position:absolute;top:5px;right:10px;font-size:20px;cursor:pointer;}
+#adminPanel input, #adminPanel textarea{width:100%;padding:8px;margin:5px 0;}
+#adminPanel button.logout{background:#ff9800;width:100%;}
 </style>
 </head>
 <body>
 
-<!-- Tombol admin login -->
 <button id="adminBtn">🔒</button>
 
-<!-- Login admin modal -->
 <div id="loginModal">
   <div>
     <span class="close" onclick="tutupLoginModal()">&times;</span>
@@ -41,6 +42,17 @@ footer{background:#333;color:white;text-align:center;padding:15px;}
     <input type="password" id="password" placeholder="Password"><br>
     <button onclick="loginAdmin()">Login</button>
   </div>
+</div>
+
+<div id="adminPanel">
+  <span class="closeAdmin" onclick="tutupAdminPanel()">&times;</span>
+  <h3>Admin Panel</h3>
+  <input type="text" id="namaProduk" placeholder="Nama Produk">
+  <input type="number" id="hargaProduk" placeholder="Harga">
+  <textarea id="catatanProduk" placeholder="Catatan Produk"></textarea>
+  <input type="file" id="fotoProduk" accept="image/*"><br>
+  <button onclick="tambahProduk()">Tambah Produk</button>
+  <button class="logout" onclick="logoutAdmin()">Logout Admin</button>
 </div>
 
 <header>
@@ -79,6 +91,7 @@ footer{background:#333;color:white;text-align:center;padding:15px;}
     <h2>Keranjang Belanja</h2>
     <div id="cartList"></div>
     <h3>Total: Rp <span id="total">0</span></h3>
+    <button onclick="pesanCart()">Pesan Sekarang</button>
   </div>
 
   <div class="card" id="kontak">
@@ -93,27 +106,42 @@ footer{background:#333;color:white;text-align:center;padding:15px;}
 </footer>
 
 <script>
-let produk = JSON.parse(localStorage.getItem("produk")) || [
-  {nama:"Contoh Produk 1", harga:10000, catatan:"Contoh", foto:"https://via.placeholder.com/200"},
-  {nama:"Contoh Produk 2", harga:20000, catatan:"Contoh", foto:"https://via.placeholder.com/200"}
-];
+let produk = JSON.parse(localStorage.getItem("produk")) || [];
 let cart = [];
 let totalHarga = 0;
 const waPhone='6282274434864';
 const ADMIN_USER="admin";
 const ADMIN_PASS="1234";
-let isAdmin=false;
+let isAdmin = localStorage.getItem("isAdmin")==="true";
 
-document.getElementById("adminBtn").addEventListener("click",()=>{document.getElementById("loginModal").style.display="flex";});
+document.getElementById("adminBtn").addEventListener("click",()=>{
+  if(isAdmin){document.getElementById("adminPanel").style.display="block";}
+  else{document.getElementById("loginModal").style.display="flex";}
+});
+
 function tutupLoginModal(){document.getElementById("loginModal").style.display="none";}
+function tutupAdminPanel(){document.getElementById("adminPanel").style.display="none";}
+
 function loginAdmin(){
   const user=document.getElementById("username").value;
   const pass=document.getElementById("password").value;
-  if(user===ADMIN_USER && pass===ADMIN_PASS){isAdmin=true;tutupLoginModal();alert("Login admin berhasil!");tampilkanProduk();}
-  else alert("Username/password salah!");
+  if(user===ADMIN_USER && pass===ADMIN_PASS){
+    isAdmin=true;
+    localStorage.setItem("isAdmin","true");
+    tutupLoginModal();
+    document.getElementById("adminPanel").style.display="block";
+    alert("Login admin berhasil!");
+    tampilkanProduk();
+  } else alert("Username/password salah!");
 }
 
-// Tampilkan produk untuk semua pelanggan
+function logoutAdmin(){
+  isAdmin=false;
+  localStorage.setItem("isAdmin","false");
+  document.getElementById("adminPanel").style.display="none";
+  tampilkanProduk();
+}
+
 function tampilkanProduk(){
   const list=document.getElementById("produkList");
   const kosong=document.getElementById("produkKosong");
@@ -128,6 +156,7 @@ function tampilkanProduk(){
         <h3>${p.nama}</h3>
         <p>${p.catatan}</p>
         <p><b>Rp ${p.harga.toLocaleString()}</b></p>
+        <button onclick="tambahCart('${p.nama}',${p.harga})">Tambah ke Keranjang</button>
         <button class="wa" onclick="orderWhatsApp('${p.nama}',${p.harga})">Pesan WA</button>
         ${isAdmin?`<button class="hapus" onclick="hapusProduk(${i})">Hapus</button>`:''}
       </div>`;
@@ -135,7 +164,28 @@ function tampilkanProduk(){
   }
 }
 
-// Hapus produk (hanya admin)
+function tambahProduk(){
+  if(!isAdmin) return alert("Hanya admin bisa menambah produk!");
+  const fotoFile=document.getElementById("fotoProduk").files[0];
+  if(!fotoFile) return alert("Pilih foto produk!");
+  const reader=new FileReader();
+  reader.onload=function(e){
+    produk.push({
+      nama: document.getElementById("namaProduk").value,
+      harga: parseInt(document.getElementById("hargaProduk").value),
+      catatan: document.getElementById("catatanProduk").value,
+      foto: e.target.result
+    });
+    localStorage.setItem("produk",JSON.stringify(produk));
+    tampilkanProduk();
+    document.getElementById("namaProduk").value='';
+    document.getElementById("hargaProduk").value='';
+    document.getElementById("catatanProduk").value='';
+    document.getElementById("fotoProduk").value='';
+  };
+  reader.readAsDataURL(fotoFile);
+}
+
 function hapusProduk(i){
   if(!isAdmin) return alert("Hanya admin yang bisa menghapus produk!");
   produk.splice(i,1);
@@ -143,14 +193,31 @@ function hapusProduk(i){
   tampilkanProduk();
 }
 
-// Tambah ke keranjang
-function tambahCart(nama,harga){cart.push({nama,harga});totalHarga+=harga;tampilkanCart();}
-function tampilkanCart(){const c=document.getElementById("cartList"),t=document.getElementById("total");c.innerHTML="";cart.forEach((p,i)=>{c.innerHTML+=`<p>${i+1}. ${p.nama} - Rp ${p.harga.toLocaleString()}</p>`});t.innerText=totalHarga.toLocaleString();}
+function tambahCart(nama,harga){
+  cart.push({nama,harga});
+  totalHarga+=harga;
+  tampilkanCart();
+}
 
-// Pesan WA
-function orderWhatsApp(nama,harga){window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(`Halo, saya ingin memesan *${nama}* seharga Rp ${harga.toLocaleString()}`)}`,'_blank');}
+function tampilkanCart(){
+  const c=document.getElementById("cartList"), t=document.getElementById("total");
+  c.innerHTML="";
+  cart.forEach((p,i)=>{c.innerHTML+=`<p>${i+1}. ${p.nama} - Rp ${p.harga.toLocaleString()}</p>`});
+  t.innerText=totalHarga.toLocaleString();
+}
 
-// Modal gambar
+// Pesan via WhatsApp, minimal 2 barang
+function pesanCart(){
+  if(cart.length<2){alert("Minimal 2 barang untuk memesan!"); return;}
+  let pesan = "Halo, saya ingin memesan:\n";
+  cart.forEach((p,i)=>{pesan+=`${i+1}. ${p.nama} - Rp ${p.harga.toLocaleString()}\n`;});
+  window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(pesan)}`,'_blank');
+}
+
+function orderWhatsApp(nama,harga){
+  window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(`Halo, saya ingin memesan *${nama}* seharga Rp ${harga.toLocaleString()}`)}`,'_blank');
+}
+
 function bukaModal(src){
   const m=document.createElement("div");
   m.style.position="fixed"; m.style.top="0"; m.style.left="0";
@@ -164,7 +231,7 @@ function bukaModal(src){
   document.body.appendChild(m);
 }
 
-// Tampilkan produk saat load
+if(localStorage.getItem("isAdmin")==="true"){isAdmin=true; document.getElementById("adminPanel").style.display="block";}
 tampilkanProduk();
 </script>
 
