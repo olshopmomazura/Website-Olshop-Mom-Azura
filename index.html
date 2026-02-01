@@ -28,6 +28,7 @@ nav a{
   margin:0 10px;
   text-decoration:none;
   font-weight:bold;
+  cursor:pointer;
 }
 .container{
   max-width:1100px;
@@ -158,6 +159,7 @@ footer{
 <a href="#produk">Produk</a>
 <a href="#keranjang">Keranjang</a>
 <a href="#kontak">Kontak</a>
+<a id="loginLogoutBtn" onclick="toggleLoginLogout()">Login</a>
 </nav>
 
 <div class="container">
@@ -221,6 +223,12 @@ const ADMIN_USER = "admin";
 const ADMIN_PASS = "1234";
 let isAdmin = localStorage.getItem("isAdmin") === "true";
 
+// Set awal tombol login/logout
+document.addEventListener("DOMContentLoaded", () => {
+  updateLoginLogoutBtn();
+  tampilkanProduk();
+});
+
 // Tombol admin
 document.getElementById("adminBtn").addEventListener("click", ()=>{
   document.getElementById("loginModal").style.display="flex";
@@ -240,6 +248,7 @@ function loginAdmin(){
     localStorage.setItem("isAdmin", "true");
     tutupLoginModal();
     alert("Login berhasil! Admin bisa menghapus produk.");
+    updateLoginLogoutBtn();
     tampilkanProduk();
   } else {
     alert("Username atau password salah!");
@@ -250,7 +259,23 @@ function loginAdmin(){
 function logoutAdmin(){
   isAdmin = false;
   localStorage.setItem("isAdmin", "false");
+  updateLoginLogoutBtn();
   tampilkanProduk();
+}
+
+// Update teks tombol login/logout
+function updateLoginLogoutBtn(){
+  const btn = document.getElementById("loginLogoutBtn");
+  btn.innerText = isAdmin ? "Logout" : "Login";
+}
+
+// Toggle login/logout via menu
+function toggleLoginLogout(){
+  if(isAdmin){
+    logoutAdmin();
+  } else {
+    document.getElementById("loginModal").style.display="flex";
+  }
 }
 
 // SIMPAN PRODUK
@@ -325,9 +350,6 @@ function bukaModal(src){
 function tutupModal(){
   document.getElementById("imgModal").style.display="none";
 }
-
-// TAMPILKAN PRODUK SAAT LOAD
-document.addEventListener("DOMContentLoaded", tampilkanProduk);
 </script>
 
 </body>
