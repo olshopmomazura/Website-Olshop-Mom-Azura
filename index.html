@@ -215,6 +215,7 @@ Selamat Datang di <b>OLSHOP MOM AZURA</b>, Pusat Peralatan Rumah Tangga Dengan H
 <div class="card" id="produk">
 <h2>Daftar Produk</h2>
 <div class="produk-list" id="produkList"></div>
+<p id="produkKosong" style="text-align:center;color:#888;"></p>
 </div>
 
 <!-- KERANJANG -->
@@ -306,20 +307,27 @@ function simpanProduk(){
 // TAMPILKAN PRODUK
 function tampilkanProduk(){
   const list = document.getElementById("produkList");
+  const kosong = document.getElementById("produkKosong");
   list.innerHTML = "";
-  produk.forEach((p,i)=>{
-    list.innerHTML += `
-      <div class="produk">
-        <img src="${p.foto}" onclick="bukaModal('${p.foto}')">
-        <h3>${p.nama}</h3>
-        <p>${p.catatan}</p>
-        <p><b>Rp ${p.harga.toLocaleString()}</b></p>
-        <button onclick="tambahCart('${p.nama}',${p.harga})">Tambah</button>
-        <button class="wa" onclick="orderWhatsApp('${p.nama}',${p.harga})">Pesan WA</button>
-        ${isAdmin ? `<button class="hapus" onclick="hapusProduk(${i})">Hapus</button>` : ''}
-      </div>
-    `;
-  });
+
+  if(produk.length === 0){
+    kosong.innerText = "Belum ada produk tersedia.";
+  } else {
+    kosong.innerText = "";
+    produk.forEach((p,i)=>{
+      list.innerHTML += `
+        <div class="produk">
+          <img src="${p.foto}" onclick="bukaModal('${p.foto}')">
+          <h3>${p.nama}</h3>
+          <p>${p.catatan}</p>
+          <p><b>Rp ${p.harga.toLocaleString()}</b></p>
+          <button onclick="tambahCart('${p.nama}',${p.harga})">Tambah</button>
+          <button class="wa" onclick="orderWhatsApp('${p.nama}',${p.harga})">Pesan WA</button>
+          ${isAdmin ? `<button class="hapus" onclick="hapusProduk(${i})">Hapus</button>` : ''}
+        </div>
+      `;
+    });
+  }
 }
 
 // TAMBAH PRODUK (hanya admin)
@@ -388,7 +396,7 @@ function tutupModal(){
 }
 
 // TAMPILKAN PRODUK SAAT LOAD
-tampilkanProduk();
+document.addEventListener("DOMContentLoaded", tampilkanProduk);
 </script>
 
 </body>
