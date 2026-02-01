@@ -116,16 +116,6 @@ Selamat Datang di <b>OLSHOP MOM AZURA</b>, Pusat Peralatan Rumah Tangga Dengan H
 
 <script>
 let produk = JSON.parse(localStorage.getItem("produk")) || [];
-
-// Tambahkan produk default jika kosong
-if(produk.length===0){
-  produk = [
-    {nama:"Sapu Lantai", harga:50000, catatan:"Sapu serbaguna, kuat dan awet", foto:"https://via.placeholder.com/300x200.png?text=Sapu+Lantai"},
-    {nama:"Ember Plastik", harga:30000, catatan:"Ember ukuran 10 liter", foto:"https://via.placeholder.com/300x200.png?text=Ember+Plastik"}
-  ];
-  localStorage.setItem("produk", JSON.stringify(produk));
-}
-
 let cart = [];
 let totalHarga = 0;
 const waPhone='6282274434864';
@@ -134,6 +124,7 @@ const ADMIN_USER="admin";
 const ADMIN_PASS="1234";
 let isAdmin=false;
 
+// Tombol admin
 document.getElementById("adminBtn").addEventListener("click",()=>{
   if(isAdmin) showAdminPanel();
   else document.getElementById("loginModal").style.display="flex";
@@ -162,13 +153,17 @@ function logoutAdmin(){
 function showAdminPanel(){ document.getElementById("adminPanel").classList.add("active"); }
 function tutupAdminPanel(){ document.getElementById("adminPanel").classList.remove("active"); }
 
-// Tambah produk admin
+// Tambah produk admin / upload produk
 function tambahProduk(){
-  if(!isAdmin){alert("Hanya admin bisa menambah produk!"); return;}
   if(!fotoProduk.files[0]){ alert("Pilih foto produk!"); return;}
   const reader=new FileReader();
   reader.onload=e=>{
-    produk.push({nama:namaProduk.value,harga:parseInt(hargaProduk.value),catatan:catatanProduk.value,foto:e.target.result});
+    produk.push({
+      nama:namaProduk.value || "Produk Baru",
+      harga:parseInt(hargaProduk.value) || 0,
+      catatan:catatanProduk.value || "-",
+      foto:e.target.result
+    });
     localStorage.setItem("produk", JSON.stringify(produk));
     tampilkanProduk();
     namaProduk.value=''; hargaProduk.value=''; catatanProduk.value=''; fotoProduk.value='';
@@ -189,8 +184,9 @@ function tampilkanProduk(){
   const list=document.getElementById("produkList");
   const kosong=document.getElementById("produkKosong");
   list.innerHTML="";
-  if(produk.length===0){ kosong.innerText="Belum ada produk tersedia."; }
-  else{
+  if(produk.length===0){
+    kosong.innerHTML = `Belum ada produk tersedia. <br><b>Silakan admin upload produk baru!</b>`;
+  } else{
     kosong.innerText="";
     produk.forEach((p,i)=>{
       list.innerHTML+=`
