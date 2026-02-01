@@ -81,30 +81,6 @@ footer{
   padding:15px;
 }
 
-/* Admin popup */
-#adminPopup{
-  position:fixed;
-  top:50px;
-  right:50px;
-  width:300px;
-  background:white;
-  border-radius:8px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.3);
-  padding:20px;
-  display:none;
-  z-index:9999;
-}
-#adminPopup h3{
-  margin-top:0;
-}
-#adminPopup .closePopup{
-  position:absolute;
-  top:5px;
-  right:10px;
-  font-size:20px;
-  cursor:pointer;
-}
-
 /* Login admin modal */
 #loginModal{
   position:fixed;
@@ -159,17 +135,6 @@ footer{
 
 <!-- Tombol admin -->
 <button id="adminBtn">🔒</button>
-
-<!-- Popup admin (tambah/hapus produk) -->
-<div id="adminPopup">
-  <span class="closePopup" onclick="tutupAdminPopup()">&times;</span>
-  <h3>Admin Panel</h3>
-  <input type="text" id="namaProduk" placeholder="Nama Produk"><br><br>
-  <input type="number" id="hargaProduk" placeholder="Harga"><br><br>
-  <textarea id="catatanProduk" placeholder="Catatan Produk"></textarea><br><br>
-  <input type="file" id="fotoProduk" accept="image/*"><br><br>
-  <button onclick="tambahProduk()">Upload Produk</button>
-</div>
 
 <!-- Login admin modal -->
 <div id="loginModal" style="display:none;">
@@ -258,17 +223,8 @@ let isAdmin = localStorage.getItem("isAdmin") === "true";
 
 // Tombol admin
 document.getElementById("adminBtn").addEventListener("click", ()=>{
-  if(isAdmin){
-    document.getElementById("adminPopup").style.display="block";
-  } else {
-    document.getElementById("loginModal").style.display="flex";
-  }
+  document.getElementById("loginModal").style.display="flex";
 });
-
-// Tutup admin popup
-function tutupAdminPopup(){
-  document.getElementById("adminPopup").style.display="none";
-}
 
 // Tutup login modal
 function tutupLoginModal(){
@@ -283,8 +239,7 @@ function loginAdmin(){
     isAdmin = true;
     localStorage.setItem("isAdmin", "true");
     tutupLoginModal();
-    document.getElementById("adminPopup").style.display="block";
-    alert("Login berhasil! Anda bisa menambah/hapus produk.");
+    alert("Login berhasil! Admin bisa menghapus produk.");
     tampilkanProduk();
   } else {
     alert("Username atau password salah!");
@@ -295,7 +250,6 @@ function loginAdmin(){
 function logoutAdmin(){
   isAdmin = false;
   localStorage.setItem("isAdmin", "false");
-  document.getElementById("adminPopup").style.display="none";
   tampilkanProduk();
 }
 
@@ -328,29 +282,6 @@ function tampilkanProduk(){
       `;
     });
   }
-}
-
-// TAMBAH PRODUK (hanya admin)
-function tambahProduk(){
-  if(!isAdmin) return alert("Hanya admin yang bisa menambah produk!");
-  if(!fotoProduk.files[0]) return alert("Pilih foto produk!");
-  
-  const reader = new FileReader();
-  reader.onload = e=>{
-    produk.push({
-      nama: namaProduk.value,
-      harga: parseInt(hargaProduk.value),
-      catatan: catatanProduk.value,
-      foto: e.target.result
-    });
-    simpanProduk();
-    tampilkanProduk();
-    namaProduk.value = '';
-    hargaProduk.value = '';
-    catatanProduk.value = '';
-    fotoProduk.value = '';
-  };
-  reader.readAsDataURL(fotoProduk.files[0]);
 }
 
 // HAPUS PRODUK (hanya admin)
