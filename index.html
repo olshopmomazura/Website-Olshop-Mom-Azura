@@ -206,9 +206,9 @@ function tampilkanCart(){
   t.innerText=totalHarga.toLocaleString();
 }
 
-// Pesan via WhatsApp, minimal 1 barang
+// Pesan via WhatsApp, minimal 0 barang
 function pesanCart(){
-  if(cart.length<2){alert("Minimal 1 barang untuk memesan!"); return;}
+  if(cart.length<2){alert("Minimal 0 barang untuk memesan!"); return;}
   let pesan = "Halo, saya ingin memesan:\n";
   cart.forEach((p,i)=>{pesan+=`${i+1}. ${p.nama} - Rp ${p.harga.toLocaleString()}\n`;});
   window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(pesan)}`,'_blank');
@@ -237,4 +237,5 @@ tampilkanProduk();
 
 </body>
 </html>
+
 
