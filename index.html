@@ -93,6 +93,7 @@ footer{
   z-index:9999;
 }
 #loginModal div{
+  position:relative;
   background:white;
   padding:30px;
   border-radius:8px;
@@ -103,6 +104,16 @@ footer{
   width:90%;
   padding:8px;
   margin:5px 0;
+}
+/* Tombol silang tutup modal */
+#loginModal span.close{
+  position:absolute;
+  top:10px;
+  right:15px;
+  font-size:28px;
+  font-weight:bold;
+  cursor:pointer;
+  color:#333;
 }
 
 /* Tombol login admin kecil */
@@ -129,6 +140,7 @@ footer{
 <!-- LOGIN ADMIN -->
 <div id="loginModal" style="display:none;">
   <div>
+    <span class="close" onclick="tutupLoginModal()">&times;</span>
     <h2>Login Admin</h2>
     <input type="text" id="username" placeholder="Username"><br>
     <input type="password" id="password" placeholder="Password"><br>
@@ -227,6 +239,11 @@ document.getElementById("adminBtn").addEventListener("click", ()=>{
   document.getElementById("loginModal").style.display = "flex";
 });
 
+// TUTUP LOGIN MODAL
+function tutupLoginModal(){
+  document.getElementById("loginModal").style.display = "none";
+}
+
 // LOGIN ADMIN
 function loginAdmin(){
   const user = document.getElementById("username").value;
@@ -234,7 +251,7 @@ function loginAdmin(){
   if(user === ADMIN_USER && pass === ADMIN_PASS){
     isAdmin = true;
     localStorage.setItem("isAdmin", "true");
-    document.getElementById("loginModal").style.display = "none";
+    tutupLoginModal();
     document.getElementById("loginLogoutBtn").innerText = "Logout";
     alert("Login berhasil! Anda bisa menambah/hapus produk.");
     tampilkanProduk();
@@ -284,8 +301,7 @@ function tampilkanProduk(){
   });
 
   // Form upload hanya untuk admin
-  const displayStyle = isAdmin ? "block" : "none";
-  document.getElementById("formUpload").style.display = displayStyle;
+  document.getElementById("formUpload").style.display = isAdmin ? "block" : "none";
 
   // Sembunyikan tombol admin dari pelanggan
   document.getElementById("adminBtn").style.display = isAdmin ? "none" : "block";
