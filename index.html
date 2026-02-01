@@ -234,12 +234,12 @@ const ADMIN_USER = "admin";
 const ADMIN_PASS = "1234";
 let isAdmin = localStorage.getItem("isAdmin") === "true";
 
-// Tampilkan tombol login admin modal
+// Tombol login admin
 document.getElementById("adminBtn").addEventListener("click", ()=>{
   document.getElementById("loginModal").style.display = "flex";
 });
 
-// TUTUP LOGIN MODAL
+// Tutup login modal
 function tutupLoginModal(){
   document.getElementById("loginModal").style.display = "none";
 }
