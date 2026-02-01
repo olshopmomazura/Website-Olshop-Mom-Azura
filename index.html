@@ -80,7 +80,6 @@ footer{
   text-align:center;
   padding:15px;
 }
-
 /* Login modal */
 #loginModal{
   position:fixed;
@@ -103,6 +102,21 @@ footer{
   width:90%;
   padding:8px;
   margin:5px 0;
+}
+/* Admin icon */
+#adminIcon{
+  position:fixed;
+  top:10px;
+  right:10px;
+  background:#ffc107;
+  color:#333;
+  padding:8px 12px;
+  border-radius:50px;
+  font-weight:bold;
+  cursor:pointer;
+  z-index:10000;
+  display:none;
+  box-shadow:0 2px 5px rgba(0,0,0,0.3);
 }
 </style>
 </head>
@@ -131,6 +145,9 @@ footer{
 <a href="#kontak">Kontak</a>
 <a href="#" id="loginLogoutBtn" onclick="toggleLoginLogout()">Login</a>
 </nav>
+
+<!-- ICON ADMIN -->
+<div id="adminIcon">ADMIN</div>
 
 <div class="container">
 
@@ -203,10 +220,12 @@ const ADMIN_USER = "admin";
 const ADMIN_PASS = "1234";
 let isAdmin = localStorage.getItem("isAdmin") === "true";
 
-// Tampilkan modal login jika bukan admin
+// Tampilkan modal login dan ikon admin jika sudah login
+const adminIcon = document.getElementById("adminIcon");
 if(isAdmin){
   document.getElementById("loginModal").style.display = "none";
   document.getElementById("loginLogoutBtn").innerText = "Logout";
+  adminIcon.style.display = "block";
 }
 
 // LOGIN ADMIN
@@ -218,6 +237,7 @@ function loginAdmin(){
     localStorage.setItem("isAdmin", "true");
     document.getElementById("loginModal").style.display = "none";
     document.getElementById("loginLogoutBtn").innerText = "Logout";
+    adminIcon.style.display = "block";
     alert("Login berhasil! Anda bisa menambah/hapus produk.");
     tampilkanProduk();
   } else {
@@ -231,6 +251,7 @@ function logoutAdmin(){
   localStorage.setItem("isAdmin", "false");
   document.getElementById("loginModal").style.display = "flex";
   document.getElementById("loginLogoutBtn").innerText = "Login";
+  adminIcon.style.display = "none";
   tampilkanProduk();
 }
 
