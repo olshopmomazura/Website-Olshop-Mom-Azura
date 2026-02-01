@@ -80,9 +80,43 @@ footer{
   text-align:center;
   padding:15px;
 }
+
+/* Login modal */
+#loginModal{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.8);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+#loginModal div{
+  background:white;
+  padding:30px;
+  border-radius:8px;
+  text-align:center;
+  width:300px;
+}
+#loginModal input{
+  width:90%;
+  padding:8px;
+  margin:5px 0;
+}
 </style>
 </head>
 <body>
+
+<!-- LOGIN ADMIN -->
+<div id="loginModal">
+  <div>
+    <h2>Login Admin</h2>
+    <input type="text" id="username" placeholder="Username"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="loginAdmin()">Login</button>
+  </div>
+</div>
 
 <header>
 <h1>OLSHOP MOM AZURA</h1>
@@ -95,6 +129,7 @@ footer{
 <a href="#produk">Produk</a>
 <a href="#keranjang">Keranjang</a>
 <a href="#kontak">Kontak</a>
+<a href="#" id="loginLogoutBtn" onclick="toggleLoginLogout()">Login</a>
 </nav>
 
 <div class="container">
@@ -102,7 +137,6 @@ footer{
 <!-- BERANDA -->
 <div class="card" id="beranda">
 <h2>Beranda</h2>
-<!-- Running Text -->
 <marquee behavior="scroll" direction="left" scrollamount="6" style="font-weight:bold; font-size:18px; color:#2c7be5;">
 Selamat Datang di <b>OLSHOP MOM AZURA</b>, Pusat Peralatan Rumah Tangga Dengan Harga Terjangkau.
 </marquee>
@@ -123,7 +157,7 @@ Selamat Datang di <b>OLSHOP MOM AZURA</b>, Pusat Peralatan Rumah Tangga Dengan H
 <textarea id="catatanProduk" placeholder="Catatan Produk"></textarea><br><br>
 <input type="file" id="fotoProduk" accept="image/*"><br><br>
 
-<button onclick="tambahProduk()">Upload Produk</button>
+<button onclick="tambahProduk()" id="btnUpload">Upload Produk</button>
 
 <hr>
 
@@ -152,42 +186,69 @@ Selamat Datang di <b>OLSHOP MOM AZURA</b>, Pusat Peralatan Rumah Tangga Dengan H
 </footer>
 
 <!-- MODAL GAMBAR -->
-<div id="imgModal" onclick="tutupModal()" style="
-display:none;
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.85);
-z-index:9999;
-justify-content:center;
-align-items:center;
-">
-<span onclick="tutupModal()" style="
-position:absolute;
-top:20px;
-right:30px;
-font-size:40px;
-color:white;
-cursor:pointer;">&times;</span>
-
+<div id="imgModal" onclick="tutupModal()" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;justify-content:center;align-items:center;">
+<span onclick="tutupModal()" style="position:absolute;top:20px;right:30px;font-size:40px;color:white;cursor:pointer;">&times;</span>
 <img id="modalImg" style="max-width:90%;max-height:90%;border-radius:12px;">
 </div>
 
 <script>
-// Data produk dan keranjang
+// DATA PRODUK DAN KERANJANG
 let produk = JSON.parse(localStorage.getItem("produk")) || [];
 let cart = [];
 let totalHarga = 0;
-
-// Nomor WhatsApp
 const waPhone = '6282274434864';
 
-// Simpan produk ke localStorage
+// ADMIN LOGIN
+const ADMIN_USER = "admin";
+const ADMIN_PASS = "1234";
+let isAdmin = localStorage.getItem("isAdmin") === "true";
+
+// Tampilkan modal login jika bukan admin
+if(isAdmin){
+  document.getElementById("loginModal").style.display = "none";
+  document.getElementById("loginLogoutBtn").innerText = "Logout";
+}
+
+// LOGIN ADMIN
+function loginAdmin(){
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+  if(user === ADMIN_USER && pass === ADMIN_PASS){
+    isAdmin = true;
+    localStorage.setItem("isAdmin", "true");
+    document.getElementById("loginModal").style.display = "none";
+    document.getElementById("loginLogoutBtn").innerText = "Logout";
+    alert("Login berhasil! Anda bisa menambah/hapus produk.");
+    tampilkanProduk();
+  } else {
+    alert("Username atau password salah!");
+  }
+}
+
+// LOGOUT ADMIN
+function logoutAdmin(){
+  isAdmin = false;
+  localStorage.setItem("isAdmin", "false");
+  document.getElementById("loginModal").style.display = "flex";
+  document.getElementById("loginLogoutBtn").innerText = "Login";
+  tampilkanProduk();
+}
+
+// TOGGLE LOGIN/LOGOUT
+function toggleLoginLogout(){
+  if(isAdmin){
+    logoutAdmin();
+  } else {
+    document.getElementById("loginModal").style.display = "flex";
+  }
+}
+
+// SIMPAN PRODUK
 function simpanProduk(){
   localStorage.setItem("produk", JSON.stringify(produk));
 }
 
-// Tampilkan produk
+// TAMPILKAN PRODUK
 function tampilkanProduk(){
   const list = document.getElementById("produkList");
   list.innerHTML = "";
@@ -200,13 +261,21 @@ function tampilkanProduk(){
         <p><b>Rp ${p.harga.toLocaleString()}</b></p>
         <button onclick="tambahCart('${p.nama}',${p.harga})">Tambah</button>
         <button class="wa" onclick="orderWhatsApp('${p.nama}',${p.harga})">Pesan WA</button>
-        <button class="hapus" onclick="hapusProduk(${i})">Hapus</button>
+        ${isAdmin ? `<button class="hapus" onclick="hapusProduk(${i})">Hapus</button>` : ''}
       </div>
     `;
   });
+
+  // Form upload hanya terlihat untuk admin
+  const displayStyle = isAdmin ? "block" : "none";
+  document.getElementById("namaProduk").style.display = displayStyle;
+  document.getElementById("hargaProduk").style.display = displayStyle;
+  document.getElementById("catatanProduk").style.display = displayStyle;
+  document.getElementById("fotoProduk").style.display = displayStyle;
+  document.getElementById("btnUpload").style.display = displayStyle;
 }
 
-// Tambah produk baru
+// TAMBAH PRODUK
 function tambahProduk(){
   if(!fotoProduk.files[0]) return alert("Pilih foto produk!");
   const reader = new FileReader();
@@ -219,7 +288,6 @@ function tambahProduk(){
     });
     simpanProduk();
     tampilkanProduk();
-    // Clear input
     namaProduk.value = '';
     hargaProduk.value = '';
     catatanProduk.value = '';
@@ -228,22 +296,21 @@ function tambahProduk(){
   reader.readAsDataURL(fotoProduk.files[0]);
 }
 
-// Hapus produk
+// HAPUS PRODUK
 function hapusProduk(i){
   produk.splice(i,1);
   simpanProduk();
   tampilkanProduk();
 }
 
-// Tambah ke keranjang
+// TAMBAH KE KERANJANG
 function tambahCart(nama,harga){
-  harga = parseInt(harga);
   cart.push({nama,harga});
   totalHarga += harga;
   tampilkanCart();
 }
 
-// Tampilkan keranjang
+// TAMPILKAN KERANJANG
 function tampilkanCart(){
   const cartList = document.getElementById("cartList");
   const totalElem = document.getElementById("total");
@@ -254,25 +321,23 @@ function tampilkanCart(){
   totalElem.innerText = totalHarga.toLocaleString();
 }
 
-// Pesan via WhatsApp
-function orderWhatsApp(namaProduk, harga){
-  const text = `Halo, saya ingin memesan *${namaProduk}* seharga Rp ${harga.toLocaleString()}`;
-  const url = `https://wa.me/${waPhone}?text=${encodeURIComponent(text)}`;
-  window.open(url,'_blank');
+// PESAN VIA WHATSAPP
+function orderWhatsApp(nama,harga){
+  const text = `Halo, saya ingin memesan *${nama}* seharga Rp ${harga.toLocaleString()}`;
+  window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(text)}`, '_blank');
 }
 
-// Modal gambar
+// MODAL GAMBAR
 function bukaModal(src){
   const modalImg = document.getElementById("modalImg");
-  const imgModal = document.getElementById("imgModal");
+  document.getElementById("imgModal").style.display="flex";
   modalImg.src = src;
-  imgModal.style.display="flex";
 }
 function tutupModal(){
   document.getElementById("imgModal").style.display="none";
 }
 
-// Tampilkan produk saat load halaman
+// TAMPILKAN PRODUK SAAT LOAD
 tampilkanProduk();
 </script>
 
