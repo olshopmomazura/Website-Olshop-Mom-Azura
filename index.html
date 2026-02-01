@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OLSHOP MOM AZURA</title>
+<style>
+body{
+  font-family: Arial, sans-serif;
+  margin:0;
+  background:#f5f5f5;
+}
+header{
+  background:#2c7be5;
+  color:white;
+  padding:25px;
+  text-align:center;
+}
+nav{
+  background:#1a5fb4;
+  padding:12px;
+  text-align:center;
+  position:sticky;
+  top:0;
+}
+nav a{
+  color:white;
+  margin:0 10px;
+  text-decoration:none;
+  font-weight:bold;
+}
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+.card{
+  background:white;
+  padding:20px;
+  margin-bottom:20px;
+  border-radius:8px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+.produk-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
+.produk{
+  border:1px solid #ddd;
+  border-radius:8px;
+  padding:15px;
+  text-align:center;
+}
+.produk img{
+  width:100%;
+  height:150px;
+  object-fit:cover;
+  border-radius:6px;
+  cursor:pointer;
+}
+button{
+  background:#2c7be5;
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:5px;
+  cursor:pointer;
+  margin:5px 0;
+}
+button.hapus{
+  background:#dc3545;
+}
+button.wa{
+  background:#25D366;
+}
+footer{
+  background:#333;
+  color:white;
+  text-align:center;
+  padding:15px;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>OLSHOP MOM AZURA</h1>
+<p>Melayani Dengan Sepenuh Hati</p>
+</header>
+
+<nav>
+<a href="#beranda">Beranda</a>
+<a href="#tentang">Tentang Kami</a>
+<a href="#produk">Produk</a>
+<a href="#keranjang">Keranjang</a>
+<a href="#kontak">Kontak</a>
+</nav>
+
+<div class="container">
+
+<!-- BERANDA -->
+<div class="card" id="beranda">
+<h2>Beranda</h2>
+<!-- Running Text -->
+<marquee behavior="scroll" direction="left" scrollamount="6" style="font-weight:bold; font-size:18px; color:#2c7be5;">
+Selamat Datang di <b>OLSHOP MOM AZURA</b>, Pusat Peralatan Rumah Tangga Dengan Harga Terjangkau.
+</marquee>
+</div>
+
+<!-- TENTANG KAMI -->
+<div class="card" id="tentang">
+<h2>Tentang Kami</h2>
+<p>OLSHOP MOM AZURA Adalah Usaha Rumahan Yang Melayani Penjualan Berbagai Kebutuhan Rumah Tangga. Kami Berkomitmen Memberikan Harga Bersahabat.</p>
+</div>
+
+<!-- PRODUK -->
+<div class="card" id="produk">
+<h2>Tambah Produk</h2>
+
+<input type="text" id="namaProduk" placeholder="Nama Produk"><br><br>
+<input type="number" id="hargaProduk" placeholder="Harga"><br><br>
+<textarea id="catatanProduk" placeholder="Catatan Produk"></textarea><br><br>
+<input type="file" id="fotoProduk" accept="image/*"><br><br>
+
+<button onclick="tambahProduk()">Upload Produk</button>
+
+<hr>
+
+<h2>Daftar Produk</h2>
+<div class="produk-list" id="produkList"></div>
+</div>
+
+<!-- KERANJANG -->
+<div class="card" id="keranjang">
+<h2>Keranjang Belanja</h2>
+<div id="cartList"></div>
+<h3>Total: Rp <span id="total">0</span></h3>
+</div>
+
+<!-- KONTAK -->
+<div class="card" id="kontak">
+<h2>Kontak</h2>
+<p>📞 WhatsApp : <b>082274434864</b></p>
+<p>🏠 Alamat   : Jl.Permata VI Belakang Usi (Perumahan Mogakovi Permata Blok E8)</p>
+</div>
+
+</div>
+
+<footer>
+<p>&copy; 2026 OLSHOP MOM AZURA</p>
+</footer>
+
+<!-- MODAL GAMBAR -->
+<div id="imgModal" onclick="tutupModal()" style="
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.85);
+z-index:9999;
+justify-content:center;
+align-items:center;
+">
+<span onclick="tutupModal()" style="
+position:absolute;
+top:20px;
+right:30px;
+font-size:40px;
+color:white;
+cursor:pointer;">&times;</span>
+
+<img id="modalImg" style="max-width:90%;max-height:90%;border-radius:12px;">
+</div>
+
+<script>
+// Data produk dan keranjang
+let produk = JSON.parse(localStorage.getItem("produk")) || [];
+let cart = [];
+let totalHarga = 0;
+
+// Nomor WhatsApp
+const waPhone = '6282274434864';
+
+// Simpan produk ke localStorage
+function simpanProduk(){
+  localStorage.setItem("produk", JSON.stringify(produk));
+}
+
+// Tampilkan produk
+function tampilkanProduk(){
+  const list = document.getElementById("produkList");
+  list.innerHTML = "";
+  produk.forEach((p,i)=>{
+    list.innerHTML += `
+      <div class="produk">
+        <img src="${p.foto}" onclick="bukaModal('${p.foto}')">
+        <h3>${p.nama}</h3>
+        <p>${p.catatan}</p>
+        <p><b>Rp ${p.harga.toLocaleString()}</b></p>
+        <button onclick="tambahCart('${p.nama}',${p.harga})">Tambah</button>
+        <button class="wa" onclick="orderWhatsApp('${p.nama}',${p.harga})">Pesan WA</button>
+        <button class="hapus" onclick="hapusProduk(${i})">Hapus</button>
+      </div>
+    `;
+  });
+}
+
+// Tambah produk baru
+function tambahProduk(){
+  if(!fotoProduk.files[0]) return alert("Pilih foto produk!");
+  const reader = new FileReader();
+  reader.onload = e=>{
+    produk.push({
+      nama:namaProduk.value,
+      harga:parseInt(hargaProduk.value),
+      catatan:catatanProduk.value,
+      foto:e.target.result
+    });
+    simpanProduk();
+    tampilkanProduk();
+    // Clear input
+    namaProduk.value = '';
+    hargaProduk.value = '';
+    catatanProduk.value = '';
+    fotoProduk.value = '';
+  };
+  reader.readAsDataURL(fotoProduk.files[0]);
+}
+
+// Hapus produk
+function hapusProduk(i){
+  produk.splice(i,1);
+  simpanProduk();
+  tampilkanProduk();
+}
+
+// Tambah ke keranjang
+function tambahCart(nama,harga){
+  harga = parseInt(harga);
+  cart.push({nama,harga});
+  totalHarga += harga;
+  tampilkanCart();
+}
+
+// Tampilkan keranjang
+function tampilkanCart(){
+  const cartList = document.getElementById("cartList");
+  const totalElem = document.getElementById("total");
+  cartList.innerHTML = "";
+  cart.forEach((c,i)=>{
+    cartList.innerHTML += `<p>${i+1}. ${c.nama} - Rp ${c.harga.toLocaleString()}</p>`;
+  });
+  totalElem.innerText = totalHarga.toLocaleString();
+}
+
+// Pesan via WhatsApp
+function orderWhatsApp(namaProduk, harga){
+  const text = `Halo, saya ingin memesan *${namaProduk}* seharga Rp ${harga.toLocaleString()}`;
+  const url = `https://wa.me/${waPhone}?text=${encodeURIComponent(text)}`;
+  window.open(url,'_blank');
+}
+
+// Modal gambar
+function bukaModal(src){
+  const modalImg = document.getElementById("modalImg");
+  const imgModal = document.getElementById("imgModal");
+  modalImg.src = src;
+  imgModal.style.display="flex";
+}
+function tutupModal(){
+  document.getElementById("imgModal").style.display="none";
+}
+
+// Tampilkan produk saat load halaman
+tampilkanProduk();
+</script>
+
+</body>
+</html>
