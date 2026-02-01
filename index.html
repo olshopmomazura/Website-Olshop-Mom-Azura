@@ -168,16 +168,17 @@ Selamat Datang di <b>OLSHOP MOM AZURA</b>, Pusat Peralatan Rumah Tangga Dengan H
 
 <!-- PRODUK -->
 <div class="card" id="produk">
-<h2>Tambah Produk</h2>
+<h2>Produk</h2>
 
+<!-- Form upload hanya untuk admin -->
+<div id="formUpload">
 <input type="text" id="namaProduk" placeholder="Nama Produk"><br><br>
 <input type="number" id="hargaProduk" placeholder="Harga"><br><br>
 <textarea id="catatanProduk" placeholder="Catatan Produk"></textarea><br><br>
 <input type="file" id="fotoProduk" accept="image/*"><br><br>
-
 <button onclick="tambahProduk()" id="btnUpload">Upload Produk</button>
-
 <hr>
+</div>
 
 <h2>Daftar Produk</h2>
 <div class="produk-list" id="produkList"></div>
@@ -282,13 +283,9 @@ function tampilkanProduk(){
     `;
   });
 
-  // Form upload hanya terlihat untuk admin
+  // Form upload hanya untuk admin
   const displayStyle = isAdmin ? "block" : "none";
-  document.getElementById("namaProduk").style.display = displayStyle;
-  document.getElementById("hargaProduk").style.display = displayStyle;
-  document.getElementById("catatanProduk").style.display = displayStyle;
-  document.getElementById("fotoProduk").style.display = displayStyle;
-  document.getElementById("btnUpload").style.display = displayStyle;
+  document.getElementById("formUpload").style.display = displayStyle;
 
   // Sembunyikan tombol admin dari pelanggan
   document.getElementById("adminBtn").style.display = isAdmin ? "none" : "block";
